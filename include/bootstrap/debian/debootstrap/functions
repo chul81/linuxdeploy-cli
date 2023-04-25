@@ -1313,6 +1313,9 @@ setup_devices_simple () {
 		warning MKNOD "Could not create /dev/ptmx, falling back to symlink. This chroot will require /dev/pts mounted with ptmxmode=666"
 		ln -sf pts/ptmx "$TARGET/dev/ptmx"
 	fi
+	if [ -d "$TARGET/dev/fd" ]; then
+		rm "$TARGET/dev/fd"
+	fi
 	ln -sf /proc/self/fd   "$TARGET/dev/fd"
 	ln -sf /proc/self/fd/0 "$TARGET/dev/stdin"
 	ln -sf /proc/self/fd/1 "$TARGET/dev/stdout"
@@ -1339,6 +1342,9 @@ setup_devices_bind () {
 		mount -o bind "/dev/$device" "$TARGET/dev/$device"
 		umount_on_exit "/dev/$device"
 	done
+	if [ -d "$TARGET/dev/fd" ]; then
+		rm "$TARGET/dev/fd"
+	fi
 	ln -s /proc/self/fd   "$TARGET/dev/fd"
 	ln -s /proc/self/fd/0 "$TARGET/dev/stdin"
 	ln -s /proc/self/fd/1 "$TARGET/dev/stdout"
